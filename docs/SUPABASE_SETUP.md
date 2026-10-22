@@ -11,7 +11,7 @@ A rolled-back test verified that an anonymous reader sees an approved venue, can
 
 Security advisors reported no warning/error-level findings. The two INFO notices about RLS with no policies are intentional: organiser profiles and source-run internals are private and server-only. The five unused-index INFO notices reflect the empty new database, so the search indexes were retained. References: [private-table RLS advisory](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy), [unused-index advisory](https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index).
 
-The URL/keys are saved in the ignored `.env` with owner-only file permissions. The secret is server-only. No keys appear in this document or the SQL. **The running app still uses its local data file until `DATABASE_URL` is configured.** The connector installs/administers the database; it is not the application's runtime database connection. No existing demo/imported data was uploaded.
+The URL/keys are saved in the ignored `.env` with owner-only file permissions. The secret is server-only. No keys appear in this document or the SQL. **Superseded for public reads:** the map update now reads the normalised published Supabase catalogue with a publishable key and `SUPABASE_CATALOGUE_ENABLED=true`. See [Map setup](MAP_SETUP.md). Legacy transactional writes still require a separately adapted organiser workflow; DATABASE_URL alone does not adapt the old JSON store to the newer schema.
 
 ## One-file installation
 

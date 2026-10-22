@@ -8,3 +8,5 @@ data/*.tmp
 .DS_Store
 *.log
 coverage/
+
+supabase/.temp/
