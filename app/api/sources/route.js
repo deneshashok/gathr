@@ -1,0 +1,1 @@
+import {readState} from '@/lib/store.mjs';import {statuses} from '@/lib/sources.mjs';export const dynamic='force-dynamic';export async function GET(){try{return Response.json({sources:statuses(await readState())});}catch{return Response.json({error:'Storage unavailable'},{status:503});}}

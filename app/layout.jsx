@@ -1,0 +1,1 @@
+import './globals.css';export const metadata={title:'GATHR — Space for your next big idea',description:'Open venues and community events, with transparent source provenance.'};export default function Layout({children}){return <html lang="en"><body>{children}</body></html>;}

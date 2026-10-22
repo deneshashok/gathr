@@ -1,0 +1,32 @@
+{
+  "projectId": "ecyjyfxxsdzipfqllglh",
+  "migration": "20261022200846_gathr_initial_schema",
+  "date": "2026-10-22",
+  "applied": true,
+  "tables": [
+    "organiser_profiles",
+    "venues",
+    "events",
+    "source_runs"
+  ],
+  "rlsEnabledOnAllTables": true,
+  "postgis": {
+    "version": "3.3.7",
+    "schema": "extensions"
+  },
+  "indexes": 9,
+  "transactionalTest": {
+    "approvedVisibleToAnon": 1,
+    "pendingVisibleToAnon": 0,
+    "spatialQueryPassed": true,
+    "testDataRolledBack": true
+  },
+  "advisors": {
+    "securityWarnings": 0,
+    "securityErrors": 0,
+    "informationalPrivateTablesWithoutPolicies": 2,
+    "informationalUnusedIndexes": 5
+  },
+  "runtimeAppStorage": "local file; DATABASE_URL not configured",
+  "dataImported": false
+}

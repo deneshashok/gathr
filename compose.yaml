@@ -1,0 +1,28 @@
+name: gathr
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: gathr
+      POSTGRES_USER: gathr
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    ports: ["127.0.0.1:55432:5432"]
+    volumes:
+      - gathr_pg:/var/lib/postgresql/data
+      - ./supabase/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gathr -d gathr"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  web:
+    build: .
+    ports: ["127.0.0.1:3000:3000"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://gathr:${POSTGRES_PASSWORD}@db:5432/gathr
+    depends_on:
+      db: {condition: service_healthy}
+volumes:
+  gathr_pg:

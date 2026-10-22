@@ -1,0 +1,1 @@
+import {readState} from '../lib/store.mjs';import {statuses} from '../lib/sources.mjs';console.table(statuses(await readState()).map(({id,status,count,lastRun})=>({id,status,count,lastRun})));process.exit(0);

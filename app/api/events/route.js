@@ -1,0 +1,1 @@
+import {eventCatalog} from '@/lib/domain.mjs';import {readState} from '@/lib/store.mjs';export const dynamic='force-dynamic';export async function GET(){try{return Response.json({events:eventCatalog((await readState()).events)});}catch{return Response.json({error:'Storage unavailable'},{status:503});}}

@@ -1,0 +1,167 @@
+{
+  "at": "2026-10-22T19:46:48.822Z",
+  "sources": [
+    {
+      "id": "luma-discover",
+      "name": "Luma Discover",
+      "kind": "event",
+      "note": "Opt-in public JSON-LD only; no undocumented discovery API. May return no structured events.",
+      "status": "live",
+      "count": 20,
+      "lastRun": "2026-10-22T19:42:53.840Z"
+    },
+    {
+      "id": "luma-event",
+      "name": "Luma event",
+      "kind": "event",
+      "note": "Public Event JSON-LD when present. No access to private events.",
+      "status": "live",
+      "count": 1,
+      "lastRun": "2026-10-22T19:42:54.556Z"
+    },
+    {
+      "id": "luma-ics",
+      "name": "Luma calendar / ICS",
+      "kind": "event",
+      "note": "Calendar owner supplies an authorised ICS feed.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "devpost",
+      "name": "devpost",
+      "kind": "event",
+      "note": "Requires an authorised public ICS feed or Event JSON-LD page; not a site-specific API crawler.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "builderbase",
+      "name": "builderbase",
+      "kind": "event",
+      "note": "Requires an authorised public ICS feed or Event JSON-LD page; not a site-specific API crawler.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "meetup",
+      "name": "meetup",
+      "kind": "event",
+      "note": "Requires an authorised public ICS feed or Event JSON-LD page; not a site-specific API crawler.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "mlh",
+      "name": "mlh",
+      "kind": "event",
+      "note": "Requires an authorised public ICS feed or Event JSON-LD page; not a site-specific API crawler.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "dev-events",
+      "name": "dev.events",
+      "kind": "event",
+      "note": "Requires an authorised public ICS feed or Event JSON-LD page; not a site-specific API crawler.",
+      "status": "live",
+      "count": 15,
+      "lastRun": "2026-10-22T19:42:55.304Z"
+    },
+    {
+      "id": "hack-radar",
+      "name": "Hack Radar",
+      "kind": "event",
+      "note": "Requires an authorised public ICS feed or Event JSON-LD page; not a site-specific API crawler.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "hack-collective",
+      "name": "Hack Collective",
+      "kind": "event",
+      "note": "Requires an authorised public ICS feed or Event JSON-LD page; not a site-specific API crawler.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "osm",
+      "name": "OpenStreetMap",
+      "kind": "venue",
+      "note": "London community centres, libraries and coworking spaces; ODbL attribution. No inferred capacity, price or availability.",
+      "status": "error",
+      "count": 0,
+      "lastRun": "2026-10-22T19:41:37.434Z"
+    },
+    {
+      "id": "overture",
+      "name": "Overture Maps",
+      "kind": "venue",
+      "note": "Import a downloaded Places GeoJSON extract; preserve feature IDs, release and source licences.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "tfl",
+      "name": "Transport for London",
+      "kind": "transit",
+      "note": "Nearby StopPoints; no inferred walking times or live venue availability.",
+      "status": "live",
+      "count": 2,
+      "lastRun": "2026-10-22T19:43:40.120Z"
+    },
+    {
+      "id": "cognee",
+      "name": "Cognee",
+      "kind": "knowledge",
+      "note": "Explicit authenticated search via /api/v1/search; no automatic upload.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "grok",
+      "name": "Grok / xAI",
+      "kind": "assistant",
+      "note": "Grounded chat over approved GATHR records. Not a web crawler or venue booking bot.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "discord",
+      "name": "Discord",
+      "kind": "community",
+      "note": "Admin-triggered event digest only; no messages sent during setup.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "zero",
+      "name": "Zero CRM (optional)",
+      "kind": "optional",
+      "note": "Not implemented: no confirmed partner API or credentials supplied.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    },
+    {
+      "id": "notion",
+      "name": "Notion (optional)",
+      "kind": "optional",
+      "note": "Not implemented: no workspace or database supplied.",
+      "status": "not configured",
+      "count": 0,
+      "lastRun": null
+    }
+  ]
+}
