@@ -12,7 +12,7 @@ const [venues, events, config, sources] = await Promise.all([
 ]);
 assert.equal(venues.storage, 'supabase'); assert.equal(events.storage, 'supabase');
 assert.ok(events.events.length > 0, 'Requires existing published remote events');
-assert.ok(venues.venues.every(v => v.status === 'approved' && v.source !== 'demo'));
+assert.ok(venues.venues.every(v => (v.status === 'approved' || v.isListingLead) && v.source !== 'demo'));
 for (const record of [...venues.venues, ...events.events]) {
   assert.equal(record.created_by, undefined); assert.equal(record.data, undefined);
 }
@@ -25,8 +25,8 @@ const response = await fetch(base + '/api/calendar'); assert.equal(response.stat
 const calendarEntries = Object.values(ical.sync.parseICS(await response.text())).filter(e => e.type === 'VEVENT');
 assert.ok(calendarEntries.length > 0);
 console.log(JSON.stringify({
-  result: 'PASS: live Supabase API, publication filter, public field projection, coordinate filtering, basemap config, source reporting, calendar parse',
-  publishedVenues: venues.venues.length, publishedEvents: events.events.length,
+  result: 'PASS: live Supabase API, labelled venue leads and publication filters, public field projection, coordinate filtering, basemap config, source reporting, calendar parse',
+  venueOptions: venues.venues.length, publishedEvents: events.events.length,
   recordsWithCoordinates: mapRecords(venues.venues, events.events).length,
   calendarEntries: calendarEntries.length, provider: config.provider,
 }, null, 2));

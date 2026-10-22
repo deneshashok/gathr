@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import {venueCostLabel,publicContactLink} from '@/lib/venue-directory.mjs';
 import { groupMapRecords, safeLink } from '@/lib/catalogue.mjs';
 
 export default function LocationMap({ records, selected, onSelect }) {
@@ -57,9 +58,14 @@ export default function LocationMap({ records, selected, onSelect }) {
         const button = document.createElement('button'); button.type = 'button'; button.textContent = record.label;
         button.addEventListener('click', () => onSelectRef.current?.(record)); item.append(button);
         const detail = document.createElement('p');
-        detail.textContent = `${record.kind === 'event' ? 'Event' : 'Venue'} · ${record.source}` +
+        detail.textContent = (record.isListingLead ? 'Unverified venue lead · ' : '') + `${record.kind === 'event' ? 'Event' : 'Venue'} · ${record.source}` +
           (record.start ? ' · ' + new Date(record.start).toLocaleDateString('en-GB', { timeZone: 'Europe/London' }) : '');
         item.append(detail);
+        if (record.kind === 'venue') {
+          const price = document.createElement('p'); price.textContent = venueCostLabel(record); item.append(price);
+          const contactUrl = publicContactLink(record.contactUrl || record.bookingUrl || record.websiteUrl);
+          if (contactUrl) { const contact = document.createElement('a'); contact.href = contactUrl; contact.target = '_blank'; contact.rel = 'noopener noreferrer'; contact.textContent = 'Contact / venue details ↗'; item.append(contact); }
+        }
         const coordinateNote = document.createElement('small'); coordinateNote.textContent = record.coordinateSource; item.append(coordinateNote);
         const link = safeLink(record.url || record.sourceUrl);
         if (link) { const a = document.createElement('a'); a.href = link; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = 'Original record ↗'; item.append(a); }
@@ -78,7 +84,7 @@ export default function LocationMap({ records, selected, onSelect }) {
     if (marker) { map.current.setView([selected.lat, selected.lon], 15); marker.openPopup(); }
   }, [selected, ready]);
   return <div className="location-map-shell">
-    <div ref={element} className="location-map" aria-label="Map of published venues and community events" />
+    <div ref={element} className="location-map" aria-label="Map of venue leads and published community events" />
     <span className="map-provider">{provider}</span>
     {error && <div role="status" className="map-error">{error}</div>}
   </div>;

@@ -1,6 +1,8 @@
 # GATHR · Open venues and community events
 
-**Latest update:** [Supabase map setup](docs/MAP_SETUP.md). The local app now shows published Supabase event locations on an interactive greyscale map, with an optional CARTO Positron key. Pending venues remain private. The earlier setup/verification sections below describe the initial prototype.
+**Venue directory:** [Costs and contact details](docs/VENUE_DIRECTORY.md). Imported venue leads are now visible with explicit unverified labels, source pricing notes and public booking/contact links.
+
+**Map update:** [Supabase map setup](docs/MAP_SETUP.md). The local app now shows published Supabase event locations on an interactive greyscale map, with an optional CARTO Positron key. Pending venues remain private. The earlier setup/verification sections below describe the initial prototype.
 
 A working local Track 4 slice: Next.js App Router, a shadcn-style Radix/CVA button and component registry, Tailwind 4, responsive venue discovery, reviewed organiser contributions, event adapters, an iCalendar feed, and explicit source provenance. MIT licensed application code. Third-party datasets retain their own licences.
 
