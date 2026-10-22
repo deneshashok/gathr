@@ -1,147 +1,131 @@
-# GATHR · Open venues and community events
+# GATHR
 
-**Venue directory:** [Costs and contact details](docs/VENUE_DIRECTORY.md). Imported venue leads are now visible with explicit unverified labels, source pricing notes and public booking/contact links.
+### Find a space. Check the costs. Bring your community together.
 
-**Map update:** [Supabase map setup](docs/MAP_SETUP.md). The local app now shows published Supabase event locations on an interactive greyscale map, with an optional CARTO Positron key. Pending venues remain private. The earlier setup/verification sections below describe the initial prototype.
+GATHR helps London community organisers discover venue leads, read the recorded pricing, find a public contact or booking page, and explore locations on a greyscale map.
 
-A working local Track 4 slice: Next.js App Router, a shadcn-style Radix/CVA button and component registry, Tailwind 4, responsive venue discovery, reviewed organiser contributions, event adapters, an iCalendar feed, and explicit source provenance. MIT licensed application code. Third-party datasets retain their own licences.
+**[Product walkthrough](docs/WALKTHROUGH.md)** · **[Venue costs and contacts](docs/VENUE_DIRECTORY.md)** · **[Map setup](docs/MAP_SETUP.md)** · **[MIT licence](LICENSE)**
 
-## Run on this Mac
+## What you can do
 
-Dependencies are installed and a production build has passed. The app runs at **http://127.0.0.1:3000** when its local server is active.
+- **Find venues:** search by name, neighbourhood, address or postcode; filter by cost type, capacity and public contact availability.
+- **See the costs:** read source pricing notes, including session rates, minimum spends and quote-on-request information. Missing prices remain unknown.
+- **Contact the venue:** follow public contact, booking and website links. Private organiser contacts are excluded.
+- **Explore the map:** locate venues and events on an interactive Leaflet map with a greyscale OpenStreetMap basemap. Optional CARTO Positron support is configured with a basemap key.
+- **Browse events:** view published community event records, filter upcoming events on the map, and export a calendar feed.
+- **Inspect provenance:** follow original source links and see which records are imported leads rather than verified hire offers.
+
+## Current data snapshot
+
+Checked against the running application's APIs on **22 October 2026**:
+
+| Content | Records |
+| --- | ---: |
+| Venue leads | 104 |
+| Venues with a public contact, booking or website link | 78 |
+| Published events | 447 |
+
+These are snapshots, not fixed product totals. Counts may change as imports and research continue. A non-demo record is not automatically verified. Imported venue leads retain their pending review status and are labelled **unverified**.
+
+Pricing is indicative source information, not a live quote or confirmed availability. The current records store their rates as descriptive notes; there are no populated numeric total-booking prices. The advanced numeric budget filter therefore excludes those textual rate cards instead of guessing comparable totals.
+
+## Walk through the product
+
+1. Open the app and select **Find a venue**.
+2. Search for an area or a venue such as **Alphabeta**.
+3. Read the grey pricing box beneath its address.
+4. Use **Contact venue**, **Booking / hire details**, or **Venue website** to check terms directly.
+5. Select **View on map** to locate the venue.
+6. Explore community events and switch the map to **Upcoming events** when planning a future gathering.
+
+The [full walkthrough](docs/WALKTHROUGH.md) explains each screen and the difference between a venue lead, a price note and a confirmed booking.
+
+### Screenshots
+
+Genuine product screenshots have not yet been added. Capture is blocked by a saved browser-access permission for the local site, including after the permission-change confirmation. No mockups are presented as screenshots. The [capture checklist](docs/SCREENSHOT_PLAN.md) records the intended hero and walkthrough frames.
+
+## Run locally
+
+Requires Node.js 22+ and npm. The repository is source code, not a public hosting deployment.
 
 ```sh
+git clone https://github.com/deneshashok/gathr.git
+cd gathr
 npm ci
-npm test
+cp .env.example .env
+```
+
+For the current Supabase-backed map and venue directory, configure the existing normalised project in `.env`:
+
+```dotenv
+SUPABASE_CATALOGUE_ENABLED=true
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-publishable-key
+SUPABASE_SECRET_KEY=your-server-secret-key
+```
+
+The publishable key reads the published event catalogue through database RLS. The server secret is used only for the restricted venue-lead projection; it is never sent to the browser. `.env` is ignored by Git. An empty `CARTO_BASEMAP_KEY` selects the greyscale OpenStreetMap fallback.
+
+```sh
 npm run build
 node --env-file=.env node_modules/next/dist/bin/next start --hostname 127.0.0.1
 ```
 
-Node 22+ is recommended. The verified host has Node 26.7.0. The build uses webpack because Turbopack's worker port was blocked by this environment's sandbox. `npm run dev` is available on a normal local terminal.
+Open [localhost:3000](http://127.0.0.1:3000). For development, `npm run dev` is also available.
 
-For a fresh checkout, copy `.env.example` to `.env`. Create long random `ADMIN_TOKEN` and URL-safe `POSTGRES_PASSWORD` values locally; never paste them into chat or commit `.env`. This workspace already has an ignored `.env` containing newly generated local credentials and public source settings. No existing credentials were read. Empty `DATABASE_URL` uses a persistent JSON demo file with three **fictional** venues. The file store supports a single application process, not multiple workers or production deployment.
+**Database setup:** the connected Supabase schema was expanded beyond the original JSON-store bootstrap. The original migration alone does not recreate every normalised table/column required by the current read projections. Review [Supabase setup](docs/SUPABASE_SETUP.md), [map setup](docs/MAP_SETUP.md) and [venue directory](docs/VENUE_DIRECTORY.md) before applying migrations to another project. This repository does not claim a fully reproducible fresh-project migration chain yet. The modern catalogue is read-only in this app; contribution and review writes need the matching organiser workflow.
 
-## What actually worked on 22 October 2026
+## How it works
 
-| Source / feature | Observed status | Evidence / implementation |
-| --- | --- | --- |
-| Luma Discover | Live import | 20 public Event JSON-LD records from `https://luma.com/london` |
-| Luma event | Live import | 1 public Event JSON-LD record from `https://luma.com/gkmdzbk9` |
-| dev.events | Live import | 15 valid dated Event/EducationEvent records from `https://dev.events/` (global events, not London-only) |
-| TfL | Live request | 2 nearby stations returned for 51.525, -0.078; venue endpoint supports every published venue |
-| OpenStreetMap | Error, no imported venues | Overpass main returned HTTP 406; alternative returned HTTP 429 |
-| Luma ICS | Not configured | ICS adapter tested with fixture roundtrip; no owner's feed supplied |
-| Devpost | Not configured | Public listing fetched; no supported Event JSON-LD found. Configure an authorised event page/feed |
-| MLH | Not configured | Public listing fetched; no supported Event JSON-LD found. Configure an authorised event page/feed |
-| BuilderBase, Meetup | Not configured | Registry entries route an authorised URL through ICS / Event JSON-LD parsers |
-| Hack Radar, Hack Collective | Not configured | Same documented format adapters; no verified feed or partner access supplied |
-| Overture | Not configured | Local Places GeoJSON importer tested using a synthetic fixture; no actual extract supplied |
-| Cognee | Not configured / untested remotely | Authenticated `/api/v1/search` client; no graph uploaded or cognified |
-| Grok / xAI | Not configured / untested remotely | Grounded Chat Completions client; requires API key and accessible model |
-| Discord | Not configured / untested remotely | Explicit operator-only webhook digest; no messages sent |
-| Zero CRM, Notion | Optional, not implemented | No confirmed Zero partner API or Notion workspace/database supplied |
-| Venue samples | Seeded / fictional | 3 sample venues with illustrative price/capacity/dates; not sourced from OSM or Overture |
-| Supabase Auth | Implemented, not configured or exercised remotely | Email magic-link UI, server verifies JWT via Auth user endpoint and checks independently verified profile |
-| Postgres / PostGIS | Hosted schema applied and verified | Four protected tables, PostGIS 3.3.7, spatial index and RLS tested via Supabase connector; app runtime still uses local storage |
-| Docker | Blocked on host | CLI exists; engine socket missing; `/Applications/Docker.app` lacks its executable |
-
-36 imported source records may describe overlapping events. API/calendar views deduplicate matching event URL + start time and retain the source list. Source counts describe successful import records, not distinct events. “Live” means a recorded successful request/import at its shown timestamp; it does **not** mean a background synchroniser is running. No source is counted as live merely because a key is configured. See `docs/VERIFICATION.md` and `docs/source-status.json`.
-
-## Venue discovery and trust
-
-- Search by neighbourhood/name, total booking budget in GBP, minimum capacity, an exact listed date, or coordinates/radius. Dates mean organiser-supplied available dates, not a connected booking system. Unknown price/capacity/date never passes a confirmed constraint.
-- Imported map places start with unknown commercial facts, no availability and `verified: false`. A place record does not imply that the operator rents event space.
-- Organisers sign in through Supabase email links. An operator must verify their identity/ownership evidence independently and create a row in `organiser_profiles` before their JWT can submit anything. Email verification alone grants no contribution rights.
-- Contributions enter `pending`. Only the configured operator token can review and approve them. Public search excludes pending/rejected records. `reviewedBy`, `reviewedAt` and owner are recorded. Approval is an operator attestation, not a booking guarantee.
-- Local operator tokens provide a development shortcut for submission/review, without pretending to be Supabase users. Enter one in **Contribute → Advanced operator access**. Normal organisers use email sign-in.
-- There is no Stripe checkout, live venue inventory, payment confirmation or reservation locking. Those need actual venue agreements and availability APIs. An AI response cannot establish either.
-
-## Docker Compose: application + PostGIS
-
-After repairing / starting Docker Desktop, first inspect existing containers (`docker ps`) and check ports 3000 / 55432. This project uses its own `gathr` Compose namespace and named volume.
-
-```sh
-docker compose config --quiet
-docker compose up --build -d
+```mermaid
+flowchart LR
+    A[Source imports and venue research] --> B[(Supabase and PostGIS)]
+    B --> C[Published event projection: RLS]
+    B --> D[Server-only venue lead projection]
+    C --> E[Next.js application]
+    D --> E
+    E --> F[Venue cards: pricing and public contacts]
+    E --> G[Leaflet greyscale map]
+    E --> H[Event list and calendar]
 ```
 
-Compose starts PostGIS and the web app. It does **not** pretend that PostGIS alone is the full Supabase platform. `db` uses amd64 emulation for the published PostGIS image on Apple Silicon. New database volumes apply the migration automatically and start with no fictional venue records. Host ingestion/migration commands need `DATABASE_URL=postgresql://gathr:<password>@127.0.0.1:55432/gathr` in `.env`; Compose overrides it internally with the `db` hostname. Existing volumes need `npm run migrate`; initialization files do not rerun automatically. Do not delete volumes to apply schema changes.
+| Layer | Technology |
+| --- | --- |
+| App | Next.js App Router, React, Tailwind CSS, Radix/shadcn-style components |
+| Database | Supabase PostgreSQL and PostGIS |
+| Map | Leaflet 1.9.4, OpenStreetMap tiles; optional CARTO Positron |
+| Event formats | Public Event JSON-LD and ICS adapters |
+| Verification | Node test runner and API smoke checks |
 
-For container ingestion, run the importer from a host terminal against the Compose database. The final web image includes the standalone server only, not development scripts.
+Private submissions, rejected listings, demo records and unsupported pending sources are excluded from the public directory projection. Imported venue leads can be displayed without promoting them to approved venues. No booking, payment or venue availability is inferred from an event taking place there.
 
-## Supabase + PostGIS option
-
-For the supplied hosted project and current setup status, see [Supabase setup](docs/SUPABASE_SETUP.md).
-
-Use a hosted Supabase project with its direct Postgres connection, or a dedicated local CLI stack:
-
-```sh
-npx supabase start
-npx supabase db reset
-```
-
-Run `db reset` only on this dedicated disposable local development stack; it destroys that stack's existing data. Do not run it against another project. Supabase CLI manages its own Docker services; Compose is an alternative, not a second Supabase installation. For hosted Supabase, apply `supabase/migrations/20261022200846_gathr_initial_schema.sql` with the SQL editor or `npm run migrate` using the project's database connection. Never assume the Compose database and Supabase Auth database are the same.
-
-Set `SUPABASE_URL`, public `SUPABASE_ANON_KEY`, and server-only `DATABASE_URL`. The database must contain the verified profile rows matching the Supabase Auth UUIDs. Add the app origin to allowed Auth redirects and configure email delivery. The public anon key is intentionally returned by `/api/auth/config`; operator, database, AI and webhook secrets never reach that endpoint.
-
-After checking an organiser's evidence, an operator can run parameterised SQL through their trusted database tooling:
-
-```sql
-insert into organiser_profiles (id, verified_at, verified_by, evidence)
-values ('<supabase-user-uuid>', now(), '<reviewer>', '<evidence reference>');
-```
-
-RLS permits public reads of approved venue rows and events and contains no client write policies. Server writes require a trusted database connection. Supabase JWTs are checked by the Auth service; contributions additionally require the verified profile row. The current operator desk uses a single local operator token; team roles, token revocation controls, append-only moderation audit history and deployment rate limits remain production work.
-
-## Ingest sources
-
-Set the appropriate URL/flag in `.env`, then run:
-
-```sh
-npm run ingest -- luma-discover luma-event dev-events
-npm run ingest -- luma-ics devpost builderbase meetup mlh hack-radar hack-collective
-npm run ingest -- osm overture
-npm run audit:sources
-```
-
-No arguments attempts configured venue/event adapters only. Each source's stable ID, original link, import timestamp and run result are stored. Upserts are idempotent per source. Reads use HTTPS, reject redirects, time out after 20 seconds and cap downloaded bodies at 5 MB. URLs are server/operator configuration, never arbitrary public request inputs. Do not configure untrusted internal URLs.
-
-Event feeds accept ICS or public schema.org Event JSON-LD, including nested ItemList/@graph structures and supported event subtypes. These are shared **format adapters**, not fabricated official APIs for every provider. Supply an authorised feed/page that actually exposes the supported format. Invalid / cancelled entries are omitted, recurring ICS entries are skipped rather than shown as one misleading occurrence, and a missing/end-before-start time is not invented. Empty parses fail without sample fallback. Imports are incremental: upstream removals/cancellations do not currently delete already persisted events. Recurrence expansion, pagination, full cancellation sync, retries, scheduled jobs, and OAuth provider APIs are future work.
-
-Luma Discover here uses observed public JSON-LD, not an undocumented discovery API. The subscription-controlled Luma API is separate and is not implemented. Grok does not fetch Luma data on behalf of the importer.
-
-For Overture, download a modest London Places GeoJSON using the official Overture CLI/Explorer, set `OVERTURE_GEOJSON_PATH` and `OVERTURE_RELEASE`, and retain its source metadata/licences. The importer handles Point features and preserves original source records. For OSM, enable `OSM_ENABLED=true`. Imported map data has no booking facts. OSM attribution and source links are displayed; redistribution is subject to ODbL. Overture extracts can combine sources with different licences: inspect the release metadata before redistribution.
-
-## Calendar and integrations
-
-`GET /api/calendar` returns RFC 5545 text/calendar with UTC timestamps, escaping and UTF-8 line folding. Import that URL into your calendar when reachable from your calendar service. A remote calendar cannot reach a Mac's localhost; no public deployment has been made.
-
-`GET /api/transit?venue=<approved-venue-id>` queries real TfL StopPoints within 700 m. Distances are straight-line metres, not walking duration. Requires `TFL_ENABLED=true`; optional `TFL_APP_KEY` is server-only. Attribution: Powered by TfL Open Data.
-
-`POST /api/integrations` requires `Authorization: Bearer <operator token>` and a JSON body:
-
-```json
-{"service":"grok","query":"Which listed venues fit 50 people under £300?"}
-```
-
-Other services: `cognee` with a `query`, or `discord` with no query to send the imported event digest. These actions are explicit and never run during ingestion/setup. No Discord message was sent during this build. Use only after authorising the relevant destination/data sharing. Grok receives approved venue records only; Cognee searches an already configured knowledge graph. Cognee add/cognify pipelines, generic Grok Bot chat-platform connectors, Zero CRM and Notion sync are not claimed to work.
-
-## Tests and verification
+## Tests
 
 ```sh
 npm test
 npm run build
-node --env-file=.env scripts/smoke.mjs
 ```
 
-The smoke script requires a running server, an operator token, local-file mode and the already imported Luma data. It backs up/restores `data/state.json`; do not use it against a shared server or while imports are writing. Tests cover filters/unknown values, distance, source statuses, calendar roundtrip/escaping/folding, shared adapters, bad input, unsafe links, bearer authorization, source deduplication and concurrent file writes. The HTTP smoke verifies pending isolation, review, authentication, search and the real-data calendar. Supabase/PostGIS and credentialed provider calls remain unverified on this host.
+With a configured running app and existing remote records:
 
-The browser permission request was declined, so browser interaction and visual QA were not performed. The implementation was compiled and checked through API-only tests, with separate authorization.
+```sh
+node --env-file=.env scripts/smoke-venues.mjs
+node --env-file=.env scripts/smoke-map.mjs
+```
 
-## Architecture and current limits
+The latest application verification passed **27 unit tests**, the production build and both API smoke checks. Browser visual verification and screenshots remain blocked by the saved origin permission. API success is not described as visual verification.
 
-See `docs/ADAPTERS.md`. API handlers call domain validation and the repository store. The same store writes local JSON or transactional Postgres. Postgres uses an advisory transaction lock for read-modify-write operations; radius discovery uses PostGIS `ST_DWithin` and its GiST index. Source credentials stay in server environment variables. Data-status endpoints expose source IDs/status/count/timestamps, never feed URLs or credentials.
+## Documentation
 
-This is a local operational prototype, not a deployed booking marketplace. No existing repository was overwritten, no public GitHub repository was created, and no partner starter repository was forked because the referenced build attachments/stack list were unavailable. The bounded prior conversation contained no usable attached files. The implementation is based on the explicit current request.
+| Guide | Purpose |
+| --- | --- |
+| [Walkthrough](docs/WALKTHROUGH.md) | Venue search, prices, contacts, map and event calendar |
+| [Venue directory](docs/VENUE_DIRECTORY.md) | Imported leads, price handling, public contact projection |
+| [Map setup](docs/MAP_SETUP.md) | Geolocations, missing coordinates and basemap configuration |
+| [Supabase setup](docs/SUPABASE_SETUP.md) | Database access, schema status and permissions |
+| [Adapter architecture](docs/ADAPTERS.md) | Data format adapters, provenance and limitations |
+| [Build history](docs/BUILD_HISTORY.md) | Earlier source checks, environment constraints and implementation notes |
 
-Provider references: [Next.js](https://nextjs.org/docs/app/getting-started/installation), [Supabase Docker](https://supabase.com/docs/guides/self-hosting/docker), [Overture Places](https://docs.overturemaps.org/guides/places/), [TfL API](https://api.tfl.gov.uk/), [Luma API access](https://help.lu.ma/p/luma-api), [Cognee API](https://docs.cognee.ai/api-reference/introduction), [xAI Chat Completions](https://api.x.ai/docs/).
+## Licence
+
+Application code is [MIT licensed](LICENSE). Third-party datasets and map tiles retain their own licences and attribution requirements. OpenStreetMap attribution is visible on the map; CARTO attribution is also shown when its basemap is used.
